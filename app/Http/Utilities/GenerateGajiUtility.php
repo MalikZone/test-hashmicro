@@ -60,10 +60,6 @@ class GenerateGajiUtility {
                 $detailGaji->potongan      = $totalDeduction;
                 $detailGaji->total_gaji    = $value->gaji->gaji + $tunjanganGolongan - $totalDeduction;
                 $detailGaji->save();
-    
-                $result['status']  = true;
-                $result['message'] = 'generate gaji success';
-                return $result;
             } catch (\exception $e) {
                 $result['message'] = 'untuk menghitung gaji, tanggal awal dan akhir periode harus diisi';
                 return $result;

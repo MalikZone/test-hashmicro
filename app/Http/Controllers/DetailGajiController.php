@@ -33,10 +33,7 @@ class DetailGajiController extends Controller
                
         $karyawan          = Karyawan::with(['divisi', 'gaji', 'absensi', 'golongan'])->get();
         $absensiPerPeriode = $this->queryAbsensi->getAbsensiPerPeriode($request->periode_form, $request->periode_to);
-        $generateGaji      = $this->generateGajiUtility->saveGenerateGaji($karyawan, $absensiPerPeriode, $request);
-        if (!$generateGaji['status']) {
-            return redirect()->back()->with(['error' => $generateGaji['message']]);
-        }
+        $this->generateGajiUtility->saveGenerateGaji($karyawan, $absensiPerPeriode, $request);
         return redirect()->back();
     }
 
