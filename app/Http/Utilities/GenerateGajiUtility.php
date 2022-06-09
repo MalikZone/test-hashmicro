@@ -40,25 +40,23 @@ class GenerateGajiUtility {
             'status'  => false,
             'message' => ''
         ];
-        foreach ($karyawan as $value) {
-            $tunjanganGolongan = $value->golongan->tunjangan;
-            foreach ($absensiPerPeriode as $item) {
-                if ($item->absen != 0 || $item->late != 0) {
-                    $deductionAbsen  = $this->deductionAbsen($value->gaji->gaji, $item->absen);
-                    $deductionLate   = $this->deductionLate($value->gaji->gaji, $item->late);
-                    $totalDeduction  = $deductionAbsen + $deductionLate + $this->deductionEtc();
-                } else {
-                    $totalDeduction  = $this->deductionEtc();
-                }
+        foreach ($absensiPerPeriode as $item) {
+            $tunjanganGolongan = $item->karyawan->golongan->tunjangan;
+            if ($item->absen > 0 || $item->late > 0) {
+                $deductionAbsen  = $this->deductionAbsen($item->karyawan->gaji->gaji, $item->absen);
+                $deductionLate   = $this->deductionLate($item->karyawan->gaji->gaji, $item->late);
+                $totalDeduction  = $deductionAbsen + $deductionLate + $this->deductionEtc();
+            } else {
+                $totalDeduction  = $this->deductionEtc();
             }
             try {
                 $detailGaji = new DetailGaji();
-                $detailGaji->karyawan_id   = $value->id;
-                $detailGaji->gaji_Pokok    = $value->gaji->gaji;
+                $detailGaji->karyawan_id   = $item->karyawan->id;
+                $detailGaji->gaji_Pokok    = $item->karyawan->gaji->gaji;
                 $detailGaji->periode_from  = $request->periode_form;
                 $detailGaji->periode_to    = $request->periode_to;
                 $detailGaji->potongan      = $totalDeduction;
-                $detailGaji->total_gaji    = $value->gaji->gaji + $tunjanganGolongan - $totalDeduction;
+                $detailGaji->total_gaji    = $item->karyawan->gaji->gaji + $tunjanganGolongan - $totalDeduction;
                 $detailGaji->save();
             } catch (\exception $e) {
                 $result['message'] = 'untuk menghitung gaji, tanggal awal dan akhir periode harus diisi';

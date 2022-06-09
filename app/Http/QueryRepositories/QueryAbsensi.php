@@ -24,7 +24,7 @@ class QueryAbsensi{
     }
 
     public function getAbsensiPerPeriode($from, $to){
-        return Absensi::with(['karyawan.gaji'])
+        return Absensi::with(['karyawan.gaji', 'karyawan.golongan'])
                 ->where([
                     'periode_from' => $from,
                     'periode_to'   => $to,
